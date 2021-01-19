@@ -1,0 +1,103 @@
+<html>
+
+<head>
+    <title>кык бл&#127938;ть</title>
+</head>
+
+<body>
+    <h1>Головоломка "КЫК"</h1>
+    <h2>(<font color=red>к</font>ультурный <font color=red>ы́</font>мидж <font color=red>К</font>арима)</h2>
+
+    <p>В табличке спрятаны 12 чисто каримовских, на мой взгляд, слов и выражений. Кто найдёт больше? &#129312;</p>
+
+    <p><b>Советы</b>:</p>
+
+    <p>
+        <ol>
+            <li>Слова могут сгибаться и пересекаться.</li>
+            <li>Слова собраны в начале 2020.</li>
+            <li>В загадке победят походу Аджик и Али.</li>
+        </ol>
+    </p>
+
+    <table id="field">
+    {% for row in field %}
+        <tr>
+        {% for letter in row %}
+            <td onclick="addCellToCurrentState(this, {x: {{forloop.parentloop.counter0}}, y: {{forloop.counter0}} })">{{ letter }}</td>
+        {% endfor %}
+        </tr>
+    {% endfor %}
+    </table>
+
+    <script>
+
+        var currentState = [];
+
+        function fillCellElement(cellElement, state) {
+            // state: 'blank' / 'inprogress' / 'complete'
+            var COLOR;
+            if (state == 'blank')
+                COLOR = 'white';
+            else if (state == 'inprogress')
+                COLOR = 'yellow';
+            else if (state == 'complete')
+                COLOR = 'green';
+
+            cellElement.style.backgroundColor = COLOR;
+        }
+
+        function redrawField() {
+            for (let cellElement of document.getElementById("field").getElementsByTagName("td")) {
+                fillCellElement(cellElement, 'blank');
+            }
+
+            // ask server and fill green words
+
+        }
+
+        function clearState() {
+            currentState = [];
+            redrawField();
+        }
+
+        function currentStateIsANewSolvedWord() {
+
+        }
+
+        function addCellToCurrentState(newCellElement, newCell) {
+            // Cancel move by clicking on 'body' but only OUTSIDE the table
+            window.event.stopPropagation();
+
+            function canBeANextLetterInWord(cellA, cellB) {
+                const stepX = cellB.x - cellA.x;
+                const stepY = cellB.y - cellA.y;
+                return (stepX === 1 && stepY === 0) || (stepX === 0 && stepY === 1);
+            }
+
+            var isAValidMove = true;
+            if (currentState.length > 0 && !canBeANextLetterInWord(currentState[currentState.length - 1], newCell))
+                isAValidMove = false;
+            currentState.forEach(function(cell) {
+                if (cell.x == newCell.x && cell.y == newCell.y)
+                    isAValidMove = false;
+            });
+
+            if (isAValidMove) {
+                currentState.push(newCell);
+                fillCellElement(newCellElement, 'inprogress');
+            }
+
+            if (currentStateIsANewSolvedWord()) {
+                clearState();
+            }
+        }
+
+        document.getElementsByTagName('body')[0].onclick = clearState;
+        document.onkeydown = function(e) { if (e.keyCode === 27) clearState(); }
+
+        document.addEventListener('DOMContentLoaded', function(event) { clearState(); });
+    </script>
+</body>
+
+</html>

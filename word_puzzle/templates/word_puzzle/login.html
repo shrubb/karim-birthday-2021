@@ -1,0 +1,40 @@
+<html>
+
+<head>
+    <title>Логин</title>
+</head>
+
+<body>
+    <form id="nicknameForm">
+        <label for="nicknameBox">Никнейм: </label>
+        <input id="nicknameBox" type="text">
+    </form>
+
+    <script>
+    /* Changes the above form's 'action' dynamically
+       to "<domain>/<value in nicknameBox>"
+    */
+
+    // Cross browser compatibility
+    var on = (function(){
+        if ("addEventListener" in window) {
+            return function(target, type, listener){
+                target.addEventListener(type, listener, false);
+            };
+        }
+        else {
+            return function(object, sEvent, fpNotify){
+                object.attachEvent("on" + sEvent, function(){
+                    fpNotify(window.event);
+                });
+            };
+        }
+    }());
+    
+    on(document.getElementById("nicknameBox"), "change", function(){
+        document.getElementById("nicknameForm").action = this.value;
+    });
+    </script>
+</body>
+
+</html>
