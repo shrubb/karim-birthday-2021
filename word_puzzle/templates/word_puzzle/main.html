@@ -8,15 +8,16 @@
     <h1>Головоломка "КЫК"</h1>
     <h2>(<font color=red>к</font>ультурный <font color=red>ы́</font>мидж <font color=red>К</font>арима)</h2>
 
-    <p>В табличке спрятаны 12 чисто каримовских, на мой взгляд, слов и выражений. Кто найдёт больше? &#129312;</p>
+    <p>В табличке спрятаны несколько чисто каримовских (на мой взгляд) слов и выражений. Кто найдёт больше? &#129312;</p>
 
     <p><b>Советы</b>:</p>
 
     <p>
         <ol>
             <li>Слова могут сгибаться и пересекаться.</li>
-            <li>Слова собраны в начале 2020.</li>
-            <li>В загадке победят походу Аджик и Али.</li>
+            <li>Слова были собраны в начале 2020.</li>
+            <li>Загадка 18+.</li>
+            <li>Походу победит или Аджик, или кто-то ещё из кисловодских парней, или Али.</li>
         </ol>
     </p>
 
@@ -24,7 +25,7 @@
     {% for row in field %}
         <tr>
         {% for letter in row %}
-            <td onclick="addCellToCurrentState(this, {x: {{forloop.parentloop.counter0}}, y: {{forloop.counter0}} })">{{ letter }}</td>
+            <td onclick="addCellToCurrentWord(this, {x: {{forloop.parentloop.counter0}}, y: {{forloop.counter0}} })">{{ letter }}</td>
         {% endfor %}
         </tr>
     {% endfor %}
@@ -32,16 +33,17 @@
 
     <script>
 
-        var currentState = [];
+        var currentWord = [];
+        var currentSolvedCells = new Set();
 
         function fillCellElement(cellElement, state) {
-            // state: 'blank' / 'inprogress' / 'complete'
+            // state: 'blank' / 'inprogress' / 'solved'
             var COLOR;
             if (state == 'blank')
                 COLOR = 'white';
             else if (state == 'inprogress')
                 COLOR = 'yellow';
-            else if (state == 'complete')
+            else if (state == 'solved')
                 COLOR = 'green';
 
             cellElement.style.backgroundColor = COLOR;
@@ -49,23 +51,72 @@
 
         function redrawField() {
             for (let cellElement of document.getElementById("field").getElementsByTagName("td")) {
-                fillCellElement(cellElement, 'blank');
+                let x = cellElement.parentNode.rowIndex;
+                let y = cellElement.cellIndex;
+
+                var cellState;
+                if (currentSolvedCells.has(x + "," + y)) {
+                    cellState = 'solved';
+                } else {
+                    cellState = 'blank';
+                }
+                fillCellElement(cellElement, cellState);
             }
-
-            // ask server and fill green words
-
         }
 
         function clearState() {
-            currentState = [];
+            currentWord = [];
             redrawField();
         }
 
-        function currentStateIsANewSolvedWord() {
+        function getSolvedWordsAndClearState() {
+            const httpRequest = new XMLHttpRequest();
+            httpRequest.open("GET", "state-query/");
+            httpRequest.responseType = 'json';
+            httpRequest.send();
 
+            httpRequest.onload = (e) => {
+                for (let word of httpRequest.response.solved_words) {
+                    var wordCell = word.start;
+
+                    // dummy move, just for consistency of the below loop
+                    word.order += 'r';
+
+                    for (let move of word.order) {
+                        currentSolvedCells.add(wordCell.x + "," + wordCell.y);
+
+                        if (move == 'r') {
+                            ++wordCell.y;
+                        } else {
+                            ++wordCell.x;
+                        }
+                    }
+                }
+
+                clearState();
+            }
         }
 
-        function addCellToCurrentState(newCellElement, newCell) {
+        function checkIfCurrentWordIsANewSolvedWord() {
+            // submit the new word and get true/false from server
+            const httpRequest = new XMLHttpRequest();
+            httpRequest.open("POST", "submit-word/");
+            httpRequest.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+            httpRequest.responseType = 'json';
+
+            httpRequest.send(JSON.stringify({'word': currentWord}));
+
+            httpRequest.onload = (e) => {
+                if (httpRequest.status == 201) {
+                    // "resource created", i.e. a new word was added to user's record (solved a new word)
+                    getSolvedWordsAndClearState();
+                } else if (httpRequest.status == 200) {
+                    // "OK", i.e. request was successful but the word isn't correct or isn't new
+                }
+            }
+        }
+
+        function addCellToCurrentWord(newCellElement, newCell) {
             // Cancel move by clicking on 'body' but only OUTSIDE the table
             window.event.stopPropagation();
 
@@ -76,27 +127,25 @@
             }
 
             var isAValidMove = true;
-            if (currentState.length > 0 && !canBeANextLetterInWord(currentState[currentState.length - 1], newCell))
+            if (currentWord.length > 0 && !canBeANextLetterInWord(currentWord[currentWord.length - 1], newCell))
                 isAValidMove = false;
-            currentState.forEach(function(cell) {
+            currentWord.forEach(function(cell) {
                 if (cell.x == newCell.x && cell.y == newCell.y)
                     isAValidMove = false;
             });
 
             if (isAValidMove) {
-                currentState.push(newCell);
+                currentWord.push(newCell);
                 fillCellElement(newCellElement, 'inprogress');
             }
 
-            if (currentStateIsANewSolvedWord()) {
-                clearState();
-            }
+            checkIfCurrentWordIsANewSolvedWord();
         }
 
         document.getElementsByTagName('body')[0].onclick = clearState;
         document.onkeydown = function(e) { if (e.keyCode === 27) clearState(); }
 
-        document.addEventListener('DOMContentLoaded', function(event) { clearState(); });
+        document.addEventListener('DOMContentLoaded', function(event) { getSolvedWordsAndClearState(); });
     </script>
 </body>
 

@@ -18,14 +18,14 @@ class Field(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.pk and Field.objects.exists():
-            raise ValidationError('There can be only one FieldLayout instance')
+            raise ValidationError("There can be only one Field instance")
         return super().save(*args, **kwargs)
 
 class Word(models.Model):
     from django.core.validators import MinValueValidator
 
     field = models.ForeignKey(Field, on_delete=models.PROTECT)
-    
+
     x_start = models.IntegerField(validators=[MinValueValidator(0)])
     y_start = models.IntegerField(validators=[MinValueValidator(0)])
     order = models.TextField()
