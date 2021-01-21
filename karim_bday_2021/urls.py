@@ -1,4 +1,4 @@
-"""karim_gift_2020 URL Configuration
+"""karim_bday_2021 URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.0/topics/http/urls/
