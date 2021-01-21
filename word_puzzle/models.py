@@ -36,7 +36,7 @@ class Word(models.Model):
 
 class UserProgress(models.Model):
     nickname = models.TextField()
-    solved_words = models.ManyToManyField(Word)
+    solved_words = models.ManyToManyField(Word, blank=True)
 
     def __str__(self):
         return f"{self.nickname}: {len(self.solved_words.all())} words"

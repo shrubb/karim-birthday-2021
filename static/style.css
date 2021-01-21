@@ -1,0 +1,92 @@
+* {
+  box-sizing: border-box;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-kerning: auto;
+}
+
+html {
+  font-family: sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+@-ms-viewport{
+  width: device-width;
+}
+
+/******************/
+
+/* Responsive page width */
+body {
+  margin: 0 auto;
+  padding: 20px 20px 20px 20px;
+  max-width: 1080px;
+  /*min-width: 200px;*/
+  background-color: #ffffff;
+  /*height: 100%;*/
+}
+
+/* Center headings */
+h1, h2 {
+  text-align: center;
+}
+
+/* Solid black cell borders */
+table.field, td {
+  border: 0.1em solid white;
+  border-collapse: collapse;
+  background-clip: padding-box;
+}
+
+/* Center the field and set width */
+table {
+  /*display: block;*/
+  margin-left: auto;
+  margin-right: auto;
+
+  width: 80%;
+}
+
+/* Perfectly square cells */
+td {
+  width: 7.67%;
+  position: relative;
+}
+td:after {
+  content: '';
+  display: block;
+  margin-top: 100%;
+}
+td .field-cell {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  /*background: gold;*/
+
+  display: flex;
+  justify-content: center; /* align horizontal */
+  align-items: center; /* align vertical */
+}
+
+/* Make cell letters white */
+.cell-letter {
+  fill: black;
+}
+
+/* Define cell colors in various states */
+td.blank {
+  background-color: #e0e0e0;
+}
+td.inprogress {
+  background-color: #ffbb55;
+}
+td.solved {
+  background-color: #00bb88;
+}
