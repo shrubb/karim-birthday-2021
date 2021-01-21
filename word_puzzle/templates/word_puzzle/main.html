@@ -47,6 +47,15 @@
         </table>
     </div>
 
+    <!-- Score counters -->
+    <br>
+    <table class="score-counters">
+        <tr>
+            <td>🧑‍🎓 слов: <span id="solved-main-words">0</span> из <span id="total-main-words">0</span></td>
+            <td>🤡 слов: <span id="solved-extra-words">0</span></td>
+        </tr>
+    </table>
+
     <script>
         var currentWord = [];
         var currentSolvedCells = new Set();
@@ -86,6 +95,10 @@
             httpRequest.send();
 
             httpRequest.onload = (e) => {
+                document.getElementById("total-main-words").innerHTML = String(httpRequest.response.total_main_words);
+                document.getElementById("solved-main-words").innerHTML = String(httpRequest.response.solved_words.length);
+                document.getElementById("solved-extra-words").innerHTML = String(httpRequest.response.solved_extra_words);
+
                 for (let word of httpRequest.response.solved_words) {
                     var wordCell = word.start;
 

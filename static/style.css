@@ -116,3 +116,9 @@ td.solved {
   right: 0;
   max-width: 100%;
 }
+
+/* Score counter */
+.score-counters {
+  text-align: center;
+  font-size: 1.7em;
+}

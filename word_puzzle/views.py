@@ -7,6 +7,8 @@ from django.template import loader
 
 from django.conf import settings
 
+from word_puzzle.models import Word, UserProgress, Field
+
 import json
 import random
 from pathlib import Path
@@ -16,9 +18,8 @@ def login(request):
     context = {}
     return HttpResponse(template.render(context, request))
 
-def main(request, nickname):
-    from word_puzzle.models import Field
 
+def main(request, nickname):
     template = loader.get_template("word_puzzle/main.html")
 
     field = get_object_or_404(Field, pk=1)
@@ -32,9 +33,8 @@ def main(request, nickname):
     }
     return HttpResponse(template.render(context, request))
 
-def state_query(request, nickname):
-    from word_puzzle.models import UserProgress
 
+def state_query(request, nickname):
     user_progress = UserProgress.objects.get_or_create(nickname=nickname)
     solved_words = [{
         'order': w.order,
@@ -43,13 +43,17 @@ def state_query(request, nickname):
         }
         for w in user_progress[0].solved_words.filter(is_target_word=True)
     ]
+    total_main_words = Word.objects.filter(is_target_word=True).count()
+    solved_extra_words = user_progress[0].solved_words.count() - len(solved_words)
 
-    return JsonResponse({'solved_words': solved_words})
+    return JsonResponse({
+        'solved_words': solved_words,
+        'total_main_words': total_main_words,
+        'solved_extra_words': solved_extra_words})
+
 
 @csrf_exempt
 def submit_word(request, nickname):
-    from word_puzzle.models import Word, UserProgress
-
     query_word = json.loads(request.body)
 
     # Check if the word is in the field
