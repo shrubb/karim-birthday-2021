@@ -1,10 +1,17 @@
 <html>
 
 <head>
-    <title>Логин</title>
+    <title>Логин &#128477;</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body>
+    <h1>Головоломка "КЫК"</h1>
+    <h2>(<font color=red>к</font>ультурный <font color=red>ы́</font>мидж <font color=red>К</font>арима)</h2>
+
+    <br>
+
     <form id="nicknameForm">
         <label for="nicknameBox">Никнейм: </label>
         <input id="nicknameBox" type="text">
@@ -30,7 +37,7 @@
             };
         }
     }());
-    
+
     on(document.getElementById("nicknameBox"), "change", function(){
         document.getElementById("nicknameForm").action = this.value;
     });
