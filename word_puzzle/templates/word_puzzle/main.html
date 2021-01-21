@@ -21,21 +21,31 @@
         <li>Проще всего будет южным парням.</li>
     </ul>
 
-    <table id="field" class="field">
-    {% for row in field %}
-        <tr>
-        {% for letter in row %}
-            <td onclick="addCellToCurrentWord(this, {x: {{forloop.parentloop.counter0}}, y: {{forloop.counter0}} })" class="blank">
-                <div class="field-cell">
-                    <svg width=100% viewBox="0 0 25 25">
-                      <text text-anchor="middle" x="12.5" y="18.5" class="cell-letter">{{ letter }}</text>
-                    </svg>
-                </div>
-            </td>
+    <!-- Gray popup background -->
+    <div id="popup-background" class="popup-background"></div>
+    <div id="popup-content" class="popup-content">
+        <!-- <div id="popup-title"></div> -->
+        <img id="popup-image" class="popup-image">
+    </div>
+
+    <div id="table-wrapper">
+        <table id="field" class="field">
+
+        {% for row in field %}
+            <tr>
+            {% for letter in row %}
+                <td onclick="addCellToCurrentWord(this, {x: {{forloop.parentloop.counter0}}, y: {{forloop.counter0}} })" class="blank">
+                    <div class="field-cell">
+                        <svg width=100% viewBox="0 0 25 25">
+                          <text text-anchor="middle" x="12.5" y="18.5" class="cell-letter">{{ letter }}</text>
+                        </svg>
+                    </div>
+                </td>
+            {% endfor %}
+            </tr>
         {% endfor %}
-        </tr>
-    {% endfor %}
-    </table>
+        </table>
+    </div>
 
     <script>
         var currentWord = [];
@@ -107,12 +117,13 @@
             httpRequest.send(JSON.stringify({'word': currentWord}));
 
             httpRequest.onload = (e) => {
-                if (httpRequest.status == 201) {
-                    // "resource created", i.e. a new word was added to user's record (solved a new word)
+                if (httpRequest.response.image) { // if the name of a static image to show isn't empty
+                    document.getElementById("popup-image").src = '/' + httpRequest.response.image;
+                    document.getElementById("popup-background").style.display = "block";
+                    document.getElementById("popup-content")   .style.display = "block";
                     getSolvedWordsAndClearState();
-                } else if (httpRequest.status == 200) {
-                    // "OK", i.e. request was successful but the word isn't correct or isn't new
                 }
+                // otherwise, the request was successful but the word isn't correct or isn't new; so don't clear `currentWord`
             }
         }
 
@@ -141,6 +152,15 @@
 
             checkIfCurrentWordIsANewSolvedWord();
         }
+
+        let popupBackground = document.getElementById("popup-background");
+        let popupContent    = document.getElementById("popup-content");
+        function hidePopupImage() {
+            popupBackground.style.display = "none";
+            popupContent   .style.display = "none";
+        }
+        popupBackground.addEventListener("click", hidePopupImage);
+        popupContent   .addEventListener("click", hidePopupImage);
 
         document.getElementsByTagName('body')[0].onclick = clearState;
         document.onkeydown = function(e) { if (e.keyCode === 27) clearState(); }

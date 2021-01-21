@@ -30,9 +30,10 @@ class Word(models.Model):
     y_start = models.IntegerField(validators=[MinValueValidator(0)])
     order = models.TextField()
     word = models.TextField()
+    is_target_word = models.BooleanField(default=True)
 
     def __str__(self):
-        return f"Word {self.word}, {self.order} from ({self.x_start}, {self.y_start})"
+        return f"{self.word} ({self.is_target_word}), {self.order} from ({self.x_start}, {self.y_start})"
 
 class UserProgress(models.Model):
     nickname = models.TextField()

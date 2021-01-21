@@ -5,7 +5,11 @@ from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 
+from django.conf import settings
+
 import json
+import random
+from pathlib import Path
 
 def login(request):
     template = loader.get_template("word_puzzle/login.html")
@@ -37,7 +41,7 @@ def state_query(request, nickname):
         'word': w.word,
         'start': {'x': w.x_start, 'y': w.y_start},
         }
-        for w in user_progress[0].solved_words.all()
+        for w in user_progress[0].solved_words.filter(is_target_word=True)
     ]
 
     return JsonResponse({'solved_words': solved_words})
@@ -62,6 +66,7 @@ def submit_word(request, nickname):
         order=word_js_to_order(query_word)).first()
 
     word_is_correct = same_word_from_db is not None
+    image_path = ""
 
     if word_is_correct:
         # Also check if the user hasn't solved this word yet
@@ -71,7 +76,21 @@ def submit_word(request, nickname):
         else:
             word_is_new_for_user = True
             user_progress.solved_words.add(same_word_from_db)
-    else:
-        word_is_new_for_user = False
 
-    return HttpResponse(status=201 if word_is_correct and word_is_new_for_user else 200)
+        # Pick one static image to show it to the user
+        # Check if this word is a "main word" (i.e. the part of the main word puzzle)
+        if same_word_from_db.is_target_word:
+            if word_is_new_for_user:
+                # Pick one fixed image
+                image_path = (Path(settings.BASE_DIR) / "static/images/specific/").glob(same_word_from_db.word + '*')
+                image_path = str(next(iter(image_path)).relative_to(settings.BASE_DIR))
+            else:
+                # Return no image
+                pass
+        else:
+            # Pick a random image
+            image_paths = list((Path(settings.BASE_DIR) / "static/images/random/").iterdir())
+            print((Path(settings.BASE_DIR) / "static/images/random/").absolute())
+            image_path = str(random.choice(image_paths).relative_to(settings.BASE_DIR))
+
+    return JsonResponse({'image': image_path})
