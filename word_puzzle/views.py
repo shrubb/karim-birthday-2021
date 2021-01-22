@@ -86,14 +86,14 @@ def submit_word(request, nickname):
         if same_word_from_db.is_target_word:
             if word_is_new_for_user:
                 # Pick one fixed image
-                image_path = (Path(settings.BASE_DIR) / "static/images/specific/").glob(same_word_from_db.word + '*')
+                image_path = (Path(settings.BASE_DIR) / "static/images/specific/lobster").glob(same_word_from_db.word + '*')
                 image_path = str(next(iter(image_path)).relative_to(settings.BASE_DIR))
             else:
                 # Return no image
                 pass
         else:
             # Pick a random image
-            image_paths = list((Path(settings.BASE_DIR) / "static/images/random/").iterdir())
+            image_paths = list((Path(settings.BASE_DIR) / "static/images/random/vsratoslav").iterdir())
             image_path = str(random.choice(image_paths).relative_to(settings.BASE_DIR))
 
     return JsonResponse({'image': image_path})
