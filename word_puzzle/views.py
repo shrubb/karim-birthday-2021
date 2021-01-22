@@ -94,7 +94,26 @@ def submit_word(request, nickname):
         else:
             # Pick a random image
             image_paths = list((Path(settings.BASE_DIR) / "static/images/random/").iterdir())
-            print((Path(settings.BASE_DIR) / "static/images/random/").absolute())
             image_path = str(random.choice(image_paths).relative_to(settings.BASE_DIR))
 
     return JsonResponse({'image': image_path})
+
+
+
+def leaderboard(request, nickname):
+    template = loader.get_template("word_puzzle/leaderboard.html")
+
+    def user_progress_to_json(user_progress):
+        solved_main_words = user_progress.solved_words.filter(is_target_word=True).count()
+        return {
+            'nickname': user_progress.nickname,
+            'solved_main_words': solved_main_words,
+            'solved_extra_words': user_progress.solved_words.count() - solved_main_words,
+        }
+
+    leaderboard_data = UserProgress.objects.exclude(solved_words=None)
+    leaderboard_data = list(map(user_progress_to_json, leaderboard_data))
+    leaderboard_data.sort(key=lambda user: (user['solved_main_words'], user['solved_extra_words']), reverse=True)
+
+    context = {'leaderboard_data': leaderboard_data}
+    return HttpResponse(template.render(context, request))

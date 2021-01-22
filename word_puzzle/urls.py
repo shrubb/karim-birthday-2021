@@ -3,8 +3,9 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.login, name='login'),
-    path('<str:nickname>/', views.main, name='main'),
-    path('<str:nickname>/state-query/', views.state_query, name='state query'),
-    path('<str:nickname>/submit-word/', views.submit_word)
+    path('', views.login),
+    path('<str:nickname>/', views.main),
+    path('<str:nickname>/state-query/', views.state_query),
+    path('<str:nickname>/submit-word/', views.submit_word),
+    path('<str:nickname>/leaderboard/', views.leaderboard),
 ]

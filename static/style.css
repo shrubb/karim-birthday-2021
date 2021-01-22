@@ -36,15 +36,15 @@ h1, h2, #nicknameForm {
   text-align: center;
 }
 
-/* Solid black cell borders */
-table.field, td {
+/* Solid white cell borders */
+table.field, table.field td {
   border: 0.1em solid white;
   border-collapse: collapse;
   background-clip: padding-box;
 }
 
 /* Center the field and set width */
-table {
+table.field {
   /*display: block;*/
   margin-left: auto;
   margin-right: auto;
@@ -53,16 +53,16 @@ table {
 }
 
 /* Perfectly square cells */
-td {
+table.field td {
   width: 6.6%;
   position: relative;
 }
-td:after {
+table.field td:after {
   content: '';
   display: block;
   margin-top: 100%;
 }
-td .field-cell {
+.field-cell {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -119,6 +119,35 @@ td.solved {
 
 /* Score counter */
 .score-counters {
+  margin-left: auto;
+  margin-right: auto;
+
+  width: 75%;
+
   text-align: center;
-  font-size: 1.7em;
+  font-size: 1em;
+}
+
+a {
+  text-decoration: none;
+  color: #2266dd;
+}
+
+.leaderboard {
+  text-align: center;
+  font-size: 1.25em;
+}
+
+table.leaderboard {
+  margin-left: auto;
+  margin-right: auto;
+
+  width: 75%;
+
+  border-collapse: collapse;
+  border-style: hidden;
+}
+
+table.leaderboard td, table.leaderboard th {
+    border: 0.08em solid black;
 }

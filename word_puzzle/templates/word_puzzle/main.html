@@ -10,7 +10,7 @@
     <h1>Головоломка "КЫК"</h1>
     <h2>(<font color=red>к</font>ультурный <font color=red>ы́</font>мидж <font color=red>К</font>арима)</h2>
 
-    <p>В табличке спрятаны несколько чисто каримовских (на мой взгляд) слов и выражений. Кто найдёт больше? &#129312;</p>
+    <p>В табличке спрятаны несколько чисто каримовских (на мой взгляд) слов и выражений. <a href="leaderboard/">Кто найдёт больше?</a> &#129312;</p>
 
     <h4>Советы:</h4>
 
@@ -28,30 +28,27 @@
         <img id="popup-image" class="popup-image">
     </div>
 
-    <div id="table-wrapper">
-        <table id="field" class="field">
-
-        {% for row in field %}
-            <tr>
-            {% for letter in row %}
-                <td onclick="addCellToCurrentWord(this, {x: {{forloop.parentloop.counter0}}, y: {{forloop.counter0}} })" class="blank">
-                    <div class="field-cell">
-                        <svg width=100% viewBox="0 0 25 25">
-                          <text text-anchor="middle" x="12.5" y="18.5" class="cell-letter">{{ letter }}</text>
-                        </svg>
-                    </div>
-                </td>
-            {% endfor %}
-            </tr>
+    <table id="field" class="field">
+    {% for row in field %}
+        <tr>
+        {% for letter in row %}
+            <td onclick="addCellToCurrentWord(this, {x: {{forloop.parentloop.counter0}}, y: {{forloop.counter0}} })" class="blank">
+                <div class="field-cell">
+                    <svg width=100% viewBox="0 0 25 25">
+                      <text text-anchor="middle" x="12.5" y="18.5" class="cell-letter">{{ letter }}</text>
+                    </svg>
+                </div>
+            </td>
         {% endfor %}
-        </table>
-    </div>
+        </tr>
+    {% endfor %}
+    </table>
 
     <!-- Score counters -->
     <br>
     <table class="score-counters">
         <tr>
-            <td>🧑‍🎓 слов: <span id="solved-main-words">0</span> из <span id="total-main-words">0</span></td>
+            <td>🎓 слов: <span id="solved-main-words">0</span> из <span id="total-main-words">0</span></td>
             <td>🤡 слов: <span id="solved-extra-words">0</span></td>
         </tr>
     </table>
