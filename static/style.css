@@ -32,7 +32,7 @@ body {
 }
 
 /* Center headings */
-h1, h2, #nicknameForm {
+h1, h2, #nicknameForm, .footer {
   text-align: center;
 }
 
