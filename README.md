@@ -3,6 +3,13 @@ Minimal word puzzle in [Django](https://www.djangoproject.com/)
 
 I made this word puzzle to congratulate [karfly](https://github.com/karfly/), but hope someone else finds it useful too.
 
+![image](https://user-images.githubusercontent.com/9570420/107872930-2bf1ae00-6ebf-11eb-9f6a-22bd606d0f0f.png)
+
+Features:
+* An insecure login page (no passwords).
+* A word-specific image pops up on correct guess of a "target" word, and a random image on a nonsense "extra"/"obfuscating" word.
+* Record tracking and a leaderboard.
+
 Running:
 * Prepare the database:
   * If you want to replicate the original birthday version, download and unpack images, the actual historical birthday database, and some extra word-related helpers from [Releases](./releases).
