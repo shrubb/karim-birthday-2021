@@ -29,6 +29,7 @@ for x, y, word, order in [
 
 height = 14
 width = 15
+# all rows concatenated
 letters = "КУВГКПОИНТНККЫЫСЕБУЛЁЁПТКЕРНЫККЕГЧУТЗРУЛЙЫАККАОРИБРЕАЗАРМШЫКЙФОММПУВЪЁОССЫЫНГУПОЕГОЛБЩЕЪКСЕККЕЗРВСЬНИЪЪЧАТЧУРДЦЕЛУУКСАРВБПСИРОПЧЁТЫЙДПСОБЬЛАВЛЯШБРЕЫЦЯМБОРЦУХЙКИАТГРЯЖИВАЯУЁТЕПАИШКЗИНЬВЫСОЦМИЦСААЬРАФЕНОСКАРАНЛАМ"
 
 field_chars = [letters[i:i+width] for i in range(0, len(letters), width)]
@@ -102,4 +103,3 @@ for x, y, word, order, is_target_word in words:
 
 for x, y, word, order, is_target_word in words:
     Word(field=field, x_start=x, y_start=y, word=word, order=order, is_target_word=is_target_word).save()
-
